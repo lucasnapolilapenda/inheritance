@@ -683,20 +683,20 @@ public class CensoredPrintWriter extends Writer {
      * @param x the <code>String</code> value to be printed
      */
     public void println(String x) {
+        String xCensored = "";
+        Boolean test = false;
         synchronized (lock) {
-            String [] text = x.split(" ");
-            for (int i = 0; i < text.length; i++) {
-                for (int i1 = 0; i1 < censorTerms.length; i1++) {
-                    if (text[1].equals(censorTerms[i1])) {
-                        text[i] = "****";
-                    }
+            for (String censorTerm : censorTerms) {
+                if (x.contains(censorTerm.replace("\"",""))) {
+                    xCensored = x.replaceAll(censorTerm.replace("\"", ""), "****");
+                    System.out.println(censorTerm.replace("\"", ""));
+                    System.out.println(censorTerm.replace("\"", "").equals("Mark Branson"));
+                    System.out.println(xCensored);
                 }
             }
-            for (int i = 0; i < text.length; i++) {
-                x = text[i] + " ";
-            }
-            System.out.println(x);
-            print(x);
+
+            System.out.println(xCensored);
+            print(xCensored);
             println();
         }
     }
