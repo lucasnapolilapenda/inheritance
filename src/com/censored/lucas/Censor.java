@@ -4,6 +4,7 @@ import java.io.*;
 
 public class Censor extends PrintWriter {
 
+    String [] censorTerms;
 
     public Censor(Writer out) {
         super(out);
@@ -37,10 +38,20 @@ public class Censor extends PrintWriter {
         super(file, csn);
     }
 
-    public String setCensorTerms(String[] censorTerms) {
-        for (String aux : censorTerms) {
-            return aux;
+
+    @Override
+    public PrintWriter printf(String format, Object... args) {
+        for (String censorTerm : censorTerms) {
+            for (int i = 0; i < args.length ; i++) {
+                if (censorTerm.equals(args[i])) {
+                    args[i] = "*";
+                }
+            }
         }
-        return "";
+        return super.printf(format, args);
+    }
+
+    public void setCensorTerms(String [] censorTerms) {
+        this.censorTerms = censorTerms;
     }
 }

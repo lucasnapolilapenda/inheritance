@@ -37,6 +37,7 @@ import java.nio.charset.UnsupportedCharsetException;
 
 public class CensoredPrintWriter extends Writer {
 
+
     /**
      * The underlying character-output stream of this
      * <code>CensoredPrinterWriter</code>.
@@ -45,6 +46,15 @@ public class CensoredPrintWriter extends Writer {
      */
     protected Writer out;
 
+    public String[] getCensorTerms() {
+        return censorTerms;
+    }
+
+    public void setCensorTerms(String[] censorTerms) {
+        this.censorTerms = censorTerms;
+    }
+
+    String [] censorTerms;
     private final boolean autoFlush;
     private boolean trouble = false;
     private Formatter formatter;
@@ -738,11 +748,18 @@ public class CensoredPrintWriter extends Writer {
      *
      * @since  1.5
      */
-    public CensoredPrintWriter printf(String format, Object ... args) {
 
+    public CensoredPrintWriter printf(String format, Object ... args) {
+        String [] censor = getCensorTerms();
+        for (int i = 0; i < args.length; i++) {
+            for (int i1 = 0; i1 < censor.length; i1++) {
+                System.out.println(args[i]);
+                System.out.println(censor[i1] + "****");
+                System.out.println((args[i]).equals(censor[i1]));
+            }
+        }
         return format(format, args);
     }
-
     /**
      * A convenience method to write a formatted string to this writer using
      * the specified format string and arguments.  If automatic flushing is
@@ -1003,7 +1020,5 @@ public class CensoredPrintWriter extends Writer {
         return this;
     }
 
-    public void setCensorTerms(String[] censorTerms) {
-        System.out.println(censorTerms[1]);
-    }
+
 }
