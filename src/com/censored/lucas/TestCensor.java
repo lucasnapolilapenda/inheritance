@@ -31,7 +31,7 @@ public class TestCensor {
         pw.format(Locale.CHINA, "%tc", c1);
         pw.println();
 
-        pw.printf("Transfer from account %d to %d in the amount $1,000,000", 1356, 1268);
+        pw.printf("Transfer from account %d to %d in the amount $1,000,000 #%d", 1356, 1268);
         pw.println();
 
         Calendar c2 = Calendar.getInstance();

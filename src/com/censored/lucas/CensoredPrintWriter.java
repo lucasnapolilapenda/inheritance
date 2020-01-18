@@ -684,6 +684,18 @@ public class CensoredPrintWriter extends Writer {
      */
     public void println(String x) {
         synchronized (lock) {
+            String [] text = x.split(" ");
+            for (int i = 0; i < text.length; i++) {
+                for (int i1 = 0; i1 < censorTerms.length; i1++) {
+                    if (text[1].equals(censorTerms[i1])) {
+                        text[i] = "****";
+                    }
+                }
+            }
+            for (int i = 0; i < text.length; i++) {
+                x = text[i] + " ";
+            }
+            System.out.println(x);
             print(x);
             println();
         }
@@ -751,13 +763,24 @@ public class CensoredPrintWriter extends Writer {
 
     public CensoredPrintWriter printf(String format, Object ... args) {
         String [] censor = getCensorTerms();
-        for (int i = 0; i < args.length; i++) {
-            for (int i1 = 0; i1 < censor.length; i1++) {
-                System.out.println(args[i]);
-                System.out.println(censor[i1] + "****");
-                System.out.println((args[i]).equals(censor[i1]));
+        String secret = "****";
+        try {
+            for (int i = 0; i < args.length; i++) {
+                for (int i1 = 0; i1 < censor.length; i1++) {
+                    System.out.println(args[i]);
+                    System.out.println((args[i].toString()).equals(censor[i1]));
+                    if (args[i].toString().equals(censor[i1])) {
+                        args[i] = secret;
+                    }
+                }
             }
+        }catch (Exception Ex) {
+            System.out.println("Ignore error: Ex");
         }
+        format = format.replaceAll("%d","%s");
+        System.out.println(args[0]+"llegue");
+        System.out.println(format);
+        System.out.println(args[0]);
         return format(format, args);
     }
     /**
@@ -866,6 +889,29 @@ public class CensoredPrintWriter extends Writer {
             Thread.currentThread().interrupt();
         } catch (IOException x) {
             trouble = true;
+        } catch (Exception x) {
+            System.out.println("Format exception could be ignored");
+        }
+        return this;
+    }
+
+    public CensoredPrintWriter format(String format) {
+        try {
+            synchronized (lock) {
+                ensureOpen();
+                if ((formatter == null)
+                        || (formatter.locale() != Locale.getDefault()))
+                    formatter = new Formatter(this);
+                formatter.format(Locale.getDefault(), format);
+                if (autoFlush)
+                    out.flush();
+            }
+        } catch (InterruptedIOException x) {
+            Thread.currentThread().interrupt();
+        } catch (IOException x) {
+            trouble = true;
+        } catch (Exception x) {
+            System.out.println("aja");
         }
         return this;
     }
