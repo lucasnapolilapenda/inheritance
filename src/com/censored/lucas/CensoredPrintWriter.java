@@ -1,17 +1,12 @@
 package com.censored.lucas;
 
 import java.io.*;
-import java.util.Formatter;
 import java.util.Locale;
 
 public class CensoredPrintWriter extends PrintWriter {
 
-
-
     String [] censorTerms;
-    private Formatter formatter;
-    private boolean autoFlush;
-    private boolean trouble = false;
+
 
     public CensoredPrintWriter(Writer out) {
         super(out);
@@ -51,25 +46,18 @@ public class CensoredPrintWriter extends PrintWriter {
         String xCensored = format;
         String [] censor = getCensorTerms();
         String secret = "****";
-        try {
-            for (int i = 0; i < args.length; i++) {
-                for (int i1 = 0; i1 < censor.length; i1++) {
-                    System.out.println(args[i]);
-                    System.out.println((args[i].toString()).equals(censor[i1]));
-                    if (args[i].toString().equals(censor[i1])) {
-                        args[i] = secret;
-                    }
+
+        for (int i = 0; i < args.length; i++) {
+            for (int i1 = 0; i1 < censor.length; i1++) {
+                if (args[i].toString().equals(censor[i1])) {
+                    args[i] = secret;
                 }
             }
-        }catch (Exception Ex) {
-            System.out.println("Ignore error: Ex");
         }
 
         for (String censorTerm : censorTerms) {
             if (xCensored.contains(censorTerm.replace("\"",""))) {
                 xCensored = xCensored.replaceAll(censorTerm.replace("\"", ""), "****");
-                System.out.println("ok");
-                System.out.println(xCensored);
             }
         }
         xCensored = xCensored.replaceAll("%d","%s");

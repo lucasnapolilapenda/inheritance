@@ -1,5 +1,5 @@
 -- Year end company report --
-Generated on: Sat Jan 18 23:06:30 EST 2020 / 星期六 一月 18 23:06:30 EST 2020
+Generated on: Sat Jan 18 23:13:10 EST 2020 / 星期六 一月 18 23:13:10 EST 2020
 Transfer from account **** to **** in the amount $1,000,000
 Transfer took place on Fri Apr 12 10:13:35 EDT 2019 / 星期五 四月 12 10:13:35 EDT 2019
 Director **** announced his resignation
