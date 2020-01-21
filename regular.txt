@@ -1,6 +1,6 @@
 -- Year end company report --
-Generated on: Sat Jan 18 23:13:10 EST 2020 / 星期六 一月 18 23:13:10 EST 2020
-Transfer from account 1356 to 1268 in the amount $1,000,000
+Generated on: Mon Jan 20 19:13:45 EST 2020 / 星期一 一月 20 19:13:45 EST 2020
+ 1356 Transfer from account 1356 to 1268 in 2222 the amount $1,000,000
 Transfer took place on Fri Apr 12 10:13:35 EDT 2019 / 星期五 四月 12 10:13:35 EDT 2019
 Director Mark Branson announced his resignation
-Our client Google had a positive response
+Our client GoogleGoogle  had a positive response

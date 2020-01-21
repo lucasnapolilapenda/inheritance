@@ -5,7 +5,10 @@ import java.util.Locale;
 
 public class CensoredPrintWriter extends PrintWriter {
 
-    String [] censorTerms;
+    public String [] censorTerms;
+
+
+    public String client;
 
 
     public CensoredPrintWriter(Writer out) {
@@ -85,9 +88,59 @@ public class CensoredPrintWriter extends PrintWriter {
         return super.format(l, format, args);
     }
 
+    @Override
+    public PrintWriter append(char c) {
+        setClient("" + c);
+        return null;
+    }
+
+    @Override
+    public void write(int c) {
+        char d = (char) c;
+        setClient(client + d);
+    }
+
+    @Override
+    public void print(char c) {
+        setClient(client + c);
+    }
+
+    @Override
+    public void print(char[] s) {
+        String add = "";
+        for (int i = 0; i < s.length; i++) {
+            add += String.valueOf(s[i]);
+        }
+        client = client + add;
+        clientValidator();
+
+    }
+
+    public void clientValidator () {
+
+        for (String censorTerm : censorTerms) {
+            if (client.contains(censorTerm.replace("\"",""))) {
+                append("****");
+                client = "";
+            }
+        }
+        append(client);
+        client = "";
+    }
+
     public String[] getCensorTerms() { return censorTerms; }
 
     public void setCensorTerms(String [] censorTerms) {
         this.censorTerms = censorTerms;
     }
+
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
+    }
+
+
 }
