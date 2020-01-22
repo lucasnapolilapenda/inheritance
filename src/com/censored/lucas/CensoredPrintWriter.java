@@ -6,43 +6,8 @@ import java.util.Locale;
 public class CensoredPrintWriter extends PrintWriter {
 
     public String [] censorTerms;
-
-
     public String client;
-
-
-    public CensoredPrintWriter(Writer out) {
-        super(out);
-    }
-
-    public CensoredPrintWriter(Writer out, boolean autoFlush) {
-        super(out, autoFlush);
-    }
-
-    public CensoredPrintWriter(OutputStream out) {
-        super(out);
-    }
-
-    public CensoredPrintWriter(OutputStream out, boolean autoFlush) {
-        super(out, autoFlush);
-    }
-
-    public CensoredPrintWriter(String fileName) throws FileNotFoundException {
-        super(fileName);
-    }
-
-    public CensoredPrintWriter(String fileName, String csn) throws FileNotFoundException, UnsupportedEncodingException {
-        super(fileName, csn);
-    }
-
-    public CensoredPrintWriter(File file) throws FileNotFoundException {
-        super(file);
-    }
-
-    public CensoredPrintWriter(File file, String csn) throws FileNotFoundException, UnsupportedEncodingException {
-        super(file, csn);
-    }
-
+    public Boolean positionCensored = true;
 
     @Override
     public PrintWriter printf(String format, Object... args) {
@@ -50,21 +15,31 @@ public class CensoredPrintWriter extends PrintWriter {
         String [] censor = getCensorTerms();
         String secret = "****";
 
-        for (int i = 0; i < args.length; i++) {
-            for (int i1 = 0; i1 < censor.length; i1++) {
-                if (args[i].toString().equals(censor[i1])) {
-                    args[i] = secret;
+        if (!getPositionCensored()) {
+            for (int i = 0; i < args.length; i++) {
+                for (int i1 = 0; i1 < censor.length; i1++) {
+                    if (args[i].toString().equals(censor[i1])) {
+                        args[i] = secret;
+                    }
                 }
             }
+
+            for (String censorTerm : censorTerms) {
+                if (xCensored.contains(censorTerm.replace("\"", ""))) {
+                    xCensored = xCensored.replaceAll(censorTerm.replace("\"", ""), "****");
+                }
+            }
+            xCensored = xCensored.replaceAll("%d", "%s");
+            return super.format(xCensored, args);
         }
 
-        for (String censorTerm : censorTerms) {
-            if (xCensored.contains(censorTerm.replace("\"",""))) {
-                xCensored = xCensored.replaceAll(censorTerm.replace("\"", ""), "****");
-            }
+        if (getPositionCensored()) {
+            String [] arg2 = {"****"};
+            xCensored = xCensored.replaceAll("%d", "****");
+            super.print(xCensored);
         }
-        xCensored = xCensored.replaceAll("%d","%s");
-        return super.format(xCensored, args);
+
+        return null;
     }
 
 
@@ -97,12 +72,12 @@ public class CensoredPrintWriter extends PrintWriter {
     @Override
     public void write(int c) {
         char d = (char) c;
-        setClient(client + d);
+        setClient(getClient() + d);
     }
 
     @Override
     public void print(char c) {
-        setClient(client + c);
+        setClient(getClient() + c);
     }
 
     @Override
@@ -111,22 +86,35 @@ public class CensoredPrintWriter extends PrintWriter {
         for (int i = 0; i < s.length; i++) {
             add += String.valueOf(s[i]);
         }
-        client = client + add;
+        setClient(getClient()+add);
         clientValidator();
-
     }
+
+    @Override
+    public PrintWriter append(CharSequence csq) {
+        String csqString = csq.toString();
+        for (String censorTerm : censorTerms) {
+            if (csqString.contains(censorTerm.replace("\"",""))) {
+                csqString = csqString.replaceAll(censorTerm.replace("\"", ""), "****");
+            }
+        }
+        return super.append(csqString);
+    }
+
+
 
     public void clientValidator () {
 
         for (String censorTerm : censorTerms) {
-            if (client.contains(censorTerm.replace("\"",""))) {
+            if (getClient().contains(censorTerm.replace("\"",""))) {
                 append("****");
-                client = "";
+                setClient("");
             }
         }
-        append(client);
-        client = "";
+        append(getClient());
+        setClient("");
     }
+
 
     public String[] getCensorTerms() { return censorTerms; }
 
@@ -141,6 +129,17 @@ public class CensoredPrintWriter extends PrintWriter {
     public void setClient(String client) {
         this.client = client;
     }
+
+    public CensoredPrintWriter(String fileName) throws FileNotFoundException {
+        super(fileName);
+    }
+
+    public Boolean getPositionCensored() {
+        return positionCensored;
+    }
+
+
+
 
 
 }
