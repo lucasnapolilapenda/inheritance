@@ -1,62 +1,72 @@
 package com.censored.lucas;
 
+import java.awt.*;
 import java.io.*;
+import java.util.Arrays;
 import java.util.Locale;
 
 public class CensoredPrintWriter extends PrintWriter {
 
     public String [] censorTerms;
     public String client;
-    public Boolean positionCensored = true;
+    public Boolean positionCensored = false;
 
+    // Override Methods
     @Override
     public PrintWriter printf(String format, Object... args) {
         String xCensored = format;
         String [] censor = getCensorTerms();
-        String secret = "****";
-
         if (!getPositionCensored()) {
             for (int i = 0; i < args.length; i++) {
                 for (int i1 = 0; i1 < censor.length; i1++) {
                     if (args[i].toString().equals(censor[i1])) {
-                        args[i] = secret;
+                        System.out.println("Changing by * :"+ args[i]);
+                        args[i] = starCreator(censor[i1].replace("\"", ""));
                     }
                 }
             }
 
             for (String censorTerm : censorTerms) {
                 if (xCensored.contains(censorTerm.replace("\"", ""))) {
-                    xCensored = xCensored.replaceAll(censorTerm.replace("\"", ""), "****");
+                    xCensored = xCensored.replaceAll(censorTerm.replace("\"", ""), starCreator(xCensored));
                 }
             }
             xCensored = xCensored.replaceAll("%d", "%s");
             return super.format(xCensored, args);
         }
 
-        if (getPositionCensored()) {
-            String [] arg2 = {"****"};
+        if (getPositionCensored() && xCensored.contains("%d")) {
             xCensored = xCensored.replaceAll("%d", "****");
+            Arrays.stream(args).forEach((e->System.out.println("Changing by * :"+ e)));
             super.print(xCensored);
-        }
+        } else { return super.format(xCensored, args);}
 
         return null;
     }
 
-
     @Override
     public void println(String x) {
+        String secret = "";
         String xCensored = x;
         synchronized (lock) {
             for (String censorTerm : censorTerms) {
                 if (x.contains(censorTerm.replace("\"", ""))) {
-                    xCensored = xCensored.replaceAll(censorTerm.replace("\"", ""), "****");
+                    xCensored = xCensored.replaceAll(censorTerm.replace("\"", ""), "secret");
+                    secret = starCreator(censorTerm.replace("\"", ""));
+                    System.out.println("Changing by * :" + censorTerm.replace("\"", ""));
                 }
             }
         }
+        xCensored = xCensored.replaceAll("secret", secret);
         super.print(xCensored);
         super.println();
     }
 
+    @Override
+    public void println(int x) {
+        String y = Integer.toString(x);
+        println(y);
+    }
 
     @Override
     public PrintWriter format(Locale l, String format, Object... args) {
@@ -95,19 +105,20 @@ public class CensoredPrintWriter extends PrintWriter {
         String csqString = csq.toString();
         for (String censorTerm : censorTerms) {
             if (csqString.contains(censorTerm.replace("\"",""))) {
-                csqString = csqString.replaceAll(censorTerm.replace("\"", ""), "****");
+                csqString = csqString.replaceAll(censorTerm.replace("\"", ""), starCreator(csqString));
             }
         }
         return super.append(csqString);
     }
 
-
+    // Local Methods
 
     public void clientValidator () {
 
         for (String censorTerm : censorTerms) {
             if (getClient().contains(censorTerm.replace("\"",""))) {
-                append("****");
+                append(starCreator(getClient()));
+                System.out.println("Changing by * :" + getClient());
                 setClient("");
             }
         }
@@ -115,6 +126,16 @@ public class CensoredPrintWriter extends PrintWriter {
         setClient("");
     }
 
+    public String starCreator (String x) {
+        String y = "";
+        for (char c : x.toCharArray()) {
+           c = '*';
+           y = y + c;
+        }
+        return y;
+    }
+
+    // constructors
 
     public String[] getCensorTerms() { return censorTerms; }
 
@@ -137,9 +158,5 @@ public class CensoredPrintWriter extends PrintWriter {
     public Boolean getPositionCensored() {
         return positionCensored;
     }
-
-
-
-
 
 }
