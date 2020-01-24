@@ -13,7 +13,7 @@ public class TestCensor {
             PrintWriter pw = new PrintWriter("regular.txt");
             writeData(pw);
 
-            String[] censorTerms = {"Mark Branson", "135644", "1268", "Google", "Generated"};
+            String[] censorTerms = {"Mark Branson", "1356", "1268", "Google"};
             CensoredPrintWriter cpw = new CensoredPrintWriter("censored.txt");
             cpw.setCensorTerms(censorTerms);
             writeData(cpw);
@@ -31,8 +31,8 @@ public class TestCensor {
         pw.format(Locale.CHINA, "%tc", c1);
         pw.println();
 
-        pw.printf("Transfer from account %d to %d in the amount $1,000,000. #", 135644, 1268);
-        pw.println(135644);
+        pw.printf("Transfer from account %d to %d in the amount $1,000,000", 1356, 1268);
+        pw.println(1356);
 
         Calendar c2 = Calendar.getInstance();
         c2.set(2019, 3, 12, 10, 13, 35);
@@ -54,4 +54,3 @@ public class TestCensor {
 
 
 }
-

@@ -1,6 +1,6 @@
 -- Year end company report --
-************** on: Thu Jan 23 19:32:58 EST 2020 / 星期四 一月 23 19:32:58 EST 2020
-Transfer from account ****** to **** in the amount $1,000,000. #******
+Generated on: Thu Jan 23 22:47:13 EST 2020 / 星期四 一月 23 22:47:13 EST 2020
+Transfer from account **** to **** in the amount $1,000,000****
 Transfer took place on Fri Apr 12 10:13:35 EDT 2019 / 星期五 四月 12 10:13:35 EDT 2019
 Director ************ announced his resignation
 Our client ****** had a positive response
