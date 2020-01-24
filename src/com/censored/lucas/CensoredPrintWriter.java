@@ -129,8 +129,8 @@ public class CensoredPrintWriter extends PrintWriter {
     public String starCreator (String x) {
         String y = "";
         for (char c : x.toCharArray()) {
-           c = '*';
-           y = y + c;
+            c = '*';
+            y = y + c;
         }
         return y;
     }
@@ -160,3 +160,4 @@ public class CensoredPrintWriter extends PrintWriter {
     }
 
 }
+
